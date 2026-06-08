@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Estado {
+  ABIERTA
+  EN_PROGRESO
+  RESUELTA
+}
+
+enum Prioridad {
+  BAJA
+  MEDIA
+  ALTA
+}
+
+enum Categoria {
+  EQUIPAMIENTO
+  PERSONAL
+  PACIENTE
+  OTRO
+}
+
+model Incidencia {
+  id          Int       @id @default(autoincrement())
+  titulo      String
+  descripcion String
+  estado      Estado    @default(ABIERTA)
+  prioridad   Prioridad @default(MEDIA)
+  categoria   Categoria @default(OTRO)
+  asignadoA   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
