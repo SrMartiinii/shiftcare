@@ -9,14 +9,16 @@ export async function PUT(
   const body = await request.json()
   const incidencia = await prisma.incidencia.update({
     where: { id: Number(id) },
-    data: {
-      titulo: body.titulo,
-      descripcion: body.descripcion,
-      estado: body.estado,
-      prioridad: body.prioridad,
-      categoria: body.categoria,
-      asignadoA: body.asignadoA,
-    },
+    data: body.nuevoEstado
+      ? { estado: body.nuevoEstado }
+      : {
+          titulo: body.titulo,
+          descripcion: body.descripcion,
+          estado: body.estado,
+          prioridad: body.prioridad,
+          categoria: body.categoria,
+          asignadoA: body.asignadoA,
+        },
   })
   return NextResponse.json(incidencia)
 }

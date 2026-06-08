@@ -70,7 +70,20 @@ export default function IncidenciasPage() {
     await fetch(`/api/incidencias/${id}`, { method: 'DELETE' })
     cargar()
   }
+async function cambiarEstado(id: number, estadoActual: string) {
+  const siguienteEstado = {
+    ABIERTA: 'EN_PROGRESO',
+    EN_PROGRESO: 'RESUELTA',
+    RESUELTA: 'ABIERTA',
+  }[estadoActual] ?? 'ABIERTA'
 
+  await fetch(`/api/incidencias/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ estadoActual, nuevoEstado: siguienteEstado }),
+  })
+  cargar()
+}
   function editar(inc: Incidencia) {
     setEditId(inc.id)
     setForm({
@@ -180,7 +193,11 @@ export default function IncidenciasPage() {
                 <p className="text-sm text-gray-500 mt-1">{inc.descripcion}</p>
                 {inc.asignadoA && <p className="text-xs text-gray-400 mt-2">👤 {inc.asignadoA}</p>}
               </div>
-              <div className="flex gap-2 shrink-0">
+<div className="flex gap-2 shrink-0">
+                <button onClick={() => cambiarEstado(inc.id, inc.estado)}
+                  className="text-sm px-4 py-1.5 rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">
+                  {inc.estado === 'ABIERTA' ? '▶ Iniciar' : inc.estado === 'EN_PROGRESO' ? '✓ Resolver' : '↩ Reabrir'}
+                </button>
                 <button onClick={() => editar(inc)} className="text-sm px-4 py-1.5 rounded-lg border text-gray-700 hover:bg-gray-50">Editar</button>
                 <button onClick={() => eliminar(inc.id)} className="text-sm px-4 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50">Borrar</button>
               </div>
